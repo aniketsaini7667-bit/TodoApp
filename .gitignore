@@ -6,3 +6,6 @@ __pycache__/
 *.png
 *.svg
 *.ico
+
+#data file 
+data.json
