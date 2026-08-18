@@ -1,11 +1,19 @@
-#python bytecode cache
+﻿# Python Cache
 __pycache__/
-*.pyc 
-#images file 
-*.jpg
-*.png
-*.svg
-*.ico
+*.pyc
 
-#data file 
-data.json
+# Nuitka Build Artifacts
+*.build/
+*.dist/
+
+# Executables and Logs
+*.exe
+crash.txt
+error.log
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# Data Files
+*.json

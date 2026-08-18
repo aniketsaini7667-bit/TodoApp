@@ -255,6 +255,19 @@ class TodoApp(ctk.CTk):
                 
             self.deiconify()
             self.update() # FORCE Tkinter to refresh the winfo_id cache!
+            
+            # PRO FIX: Clamp to screen boundaries to prevent off-screen spawning
+            sw = self.winfo_screenwidth()
+            sh = self.winfo_screenheight()
+            w = self.winfo_width()
+            h = self.winfo_height()
+            x = self.winfo_x()
+            y = self.winfo_y()
+            new_x = max(0, min(x, sw - w))
+            new_y = max(0, min(y, sh - h))
+            if new_x != x or new_y != y:
+                self.geometry(f"+{new_x}+{new_y}")
+                
             self.after(200, self.update_app_icon)
             
             # PRO FIX: Restore the dark titlebar that Windows strips when toggling overrideredirect
@@ -380,6 +393,7 @@ class TodoApp(ctk.CTk):
             self.settings_view.grid_forget()
 
             self.update_advanced_stats()
+            self.refresh_stats()
             self.stats_view.grid(row=0, column=0, sticky="nsew")
             self.title_label.configure(text="Analytics")
             self.stats_btn.configure(text="🔙")
@@ -416,7 +430,7 @@ class TodoApp(ctk.CTk):
     def setup_global_hotkey(self):
         try:
             import keyboard
-            hotkey = self.data_manager.data["settings"].get("global_hotkey", "alt+t")
+            hotkey = self.data_manager.data["settings"].get("global_hotkey", "alt+a")
             sw_hotkey = self.data_manager.data["settings"].get("sw_hotkey", "alt+s")
             mini_hotkey = self.data_manager.data["settings"].get("mini_hotkey", "alt+m")
             keyboard.unhook_all()
@@ -745,7 +759,7 @@ class TodoApp(ctk.CTk):
         
         ctk.CTkLabel(hotkey_frame, text="App Toggle Hotkey", font=("Segoe UI", 12)).grid(row=0, column=0, pady=5, sticky="w")
         self.hotkey_entry = ctk.CTkEntry(hotkey_frame, fg_color="#121212", border_color="#333333", width=90)
-        self.hotkey_entry.insert(0, s.get("global_hotkey", "alt+t"))
+        self.hotkey_entry.insert(0, s.get("global_hotkey", "alt+a"))
         self.hotkey_entry.grid(row=1, column=0, sticky="w")
         
         ctk.CTkLabel(hotkey_frame, text="Stopwatch Hotkey", font=("Segoe UI", 12)).grid(row=0, column=1, pady=5)
@@ -1200,6 +1214,15 @@ class TodoApp(ctk.CTk):
         settings = self.data_manager.data["settings"]
         
         row_idx = 0
+
+        # PRO FIX: Empty State UI
+        if not tasks:
+            empty_frame = ctk.CTkFrame(self.scrollable_frame, fg_color="transparent")
+            empty_frame.grid(row=0, column=0, sticky="nsew", pady=80)
+            empty_frame.grid_columnconfigure(0, weight=1)
+            ctk.CTkLabel(empty_frame, text="All caught up! 🎉", font=("Segoe UI", 24, "bold"), text_color="#28a745").grid(row=0, column=0, pady=(0, 5))
+            ctk.CTkLabel(empty_frame, text="Add a task above to conquer your day.", font=("Segoe UI", 14), text_color="#777777").grid(row=1, column=0)
+            return
 
         for q_id, q_data in quadrants_config.items():
             if settings.get("zen_mode", False) and q_id in ["q3", "q4"]:

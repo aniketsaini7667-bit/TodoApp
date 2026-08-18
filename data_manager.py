@@ -10,7 +10,11 @@ if getattr(sys, 'frozen', False):
 else:
     application_path = os.path.dirname(os.path.abspath(__file__))
 
-DATA_FILE = os.path.join(application_path, "data.json")
+# PRO FIX: Use standard Windows AppData folder for user data to avoid Admin permission issues
+app_data_dir = os.path.join(os.getenv('APPDATA', application_path), "FocusTodo")
+os.makedirs(app_data_dir, exist_ok=True)
+
+DATA_FILE = os.path.join(app_data_dir, "DO-NOT-DELETE-FocusTodo-data.json")
 
 DEFAULT_DATA = {
     "settings": {
@@ -24,19 +28,21 @@ DEFAULT_DATA = {
         "badge_color": "#DC3545",
         "window_width": 450,
         "window_height": 650,
+        "always_on_top": True,
         "sound_effects": True,
         "sw_running": False,
         "sw_start": 0.0,
         "sw_elapsed": 0.0,
         "sw_all_time": 0.0,
         "sw_last_recorded": 0.0,
-        "sw_hotkey": "alt+s",
+        "sw_hotkey": "alt+x",
         "sw_badge_color": "#28a745",
-        "mini_hotkey": "alt+m",
-        "mini_window_width": 250,
-        "mini_window_height": 120,
-        "mini_transparency": 1.0,
+        "mini_hotkey": "alt+z",
+        "mini_window_width": 160,
+        "mini_window_height": 60,
+        "mini_transparency": 0.5,
         "oled_shift_sec": 60,
+        "global_hotkey": "alt+a",
         "q1_expanded": True,
         "q2_expanded": True,
         "q3_expanded": True,
