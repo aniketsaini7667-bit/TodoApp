@@ -17,7 +17,7 @@ Ready to use out of the box—no installation required!
   - **Daily Reset**: Automatically clears completed tasks at the end of your customized work day.
   - **Auto-Demotion**: Tasks lingering in Q1 (Urgent & Important) for more than 48 hours are automatically demoted to Q3 to keep your priorities realistic.
 - **Statistics & Streaks**: Visualize your productivity with built-in stats and daily streaks.
-- **Global Hotkeys**: Control the timer (default: `Alt+S`) and toggle mini-mode (default: `Alt+M`) from anywhere on your PC, even when the app is in the background.
+- **Global Hotkeys**: Control the timer (default: `Alt+x`) and toggle mini-mode (default: `Alt+z`) from anywhere on your PC, even when the app is in the background.
 - **Robust Crash Recovery**: Never lose your timer progress if your system closes unexpectedly.
 - **Highly Customizable**: Adjust window sizes, daily schedules, colors, sounds, and more directly in the app settings.
 
