@@ -35,11 +35,10 @@ class TodoApp(ctk.CTk):
         self.title("Todo List - Pro")
         
         # Removed the WM_DELETE_WINDOW intercept so clicking X actually closes        
-        # PRO FIX: Use direct env variable to bypass IDE linter warnings about tempfile
+        # Use direct env variable to bypass IDE linter warnings about tempfile
         self.temp_icon_path = os.path.join(os.environ.get('TEMP', application_path), "todo_dynamic_icon.ico")
         
-        # PRO FIX: Delay the initial icon update with a robust 2-second timer. 
-        # This guarantees Windows has fully rendered the taskbar slot before we inject the COM overlay.
+        # Delay the initial icon update with a robust 2-second timer. 
         self.update_idletasks()
         self.after(2000, self.update_app_icon)
 
@@ -144,12 +143,12 @@ class TodoApp(ctk.CTk):
         self.mini_container.grid_columnconfigure(0, weight=1)
         self.mini_container.grid_rowconfigure(0, weight=1)
         
-        # PRO FIX: Dimmer white to reduce OLED subpixel wear
+        # Dimmer white to reduce OLED subpixel wear
         oled_color = self.data_manager.data["settings"].get("oled_text_color", "#B3B3B3")
         self.mini_lbl_sw_time = ctk.CTkLabel(self.mini_container, text="00:00:00", font=("Segoe UI", 36, "bold"), text_color=oled_color)
         self.mini_lbl_sw_time.place(relx=0.5, rely=0.5, anchor="center")
         
-        # OLED Friendly: Drag window by clicking anywhere on the mini timer
+        # Drag window by clicking anywhere on the mini timer
         self.mini_lbl_sw_time.bind("<Button-1>", self.start_window_move)
         self.mini_lbl_sw_time.bind("<B1-Motion>", self.do_window_move)
         self.mini_container.bind("<Button-1>", self.start_window_move)
@@ -157,7 +156,7 @@ class TodoApp(ctk.CTk):
 
         self.mini_btn_expand = ctk.CTkButton(self.mini_container, text="🗗", width=25, height=25, font=("Segoe UI", 12), fg_color="transparent", text_color="#888888", hover_color="#555555", command=self.toggle_mini_mode)
         
-        # PRO FIX: Completely hide the button until hovered to prevent burn-in
+        # Completely hide the button until hovered to prevent burn-in
         def on_hover_enter(e): self.mini_btn_expand.place(relx=1.0, rely=0.0, anchor="ne", x=-5, y=5)
         def on_hover_leave(e): self.mini_btn_expand.place_forget()
         
@@ -211,9 +210,9 @@ class TodoApp(ctk.CTk):
                 self.attributes('-topmost', True)
                 
             self.deiconify()
-            self.update() # FORCE Tkinter to refresh the winfo_id cache!
+            self.update() 
             
-            # PRO FIX: Keep the taskbar icon alive even when overrideredirect is True
+            # Keep the taskbar icon alive even when overrideredirect is True
             def apply_taskbar_hack():
                 try:
                     import ctypes
@@ -257,7 +256,7 @@ class TodoApp(ctk.CTk):
             self.update() # FORCE Tkinter to refresh the winfo_id cache!
             self.after(200, self.update_app_icon)
             
-            # PRO FIX: Restore the dark titlebar that Windows strips when toggling overrideredirect
+            # Restore the dark titlebar that Windows strips when toggling overrideredirect
             try:
                 if hasattr(self, "_windows_set_titlebar_color"):
                     self._windows_set_titlebar_color(self._get_appearance_mode())
@@ -538,7 +537,7 @@ class TodoApp(ctk.CTk):
         if hasattr(self, 'mini_lbl_sw_time'):
             self.mini_lbl_sw_time.configure(text=time_str)
             
-            # PRO FIX: OLED Pixel Shifting - Based on REAL time, not stopwatch time
+            # OLED Pixel Shifting - Based on REAL time, not stopwatch time
             current_time = time.time()
             if getattr(self, "is_mini_mode", False):
                 last_shift = getattr(self, "_last_pixel_shift", 0)
@@ -1103,7 +1102,7 @@ class TodoApp(ctk.CTk):
             if hicon_big:
                 ctypes.windll.user32.SendMessageW(hwnd, WM_SETICON, ICON_BIG, hicon_big)
                 
-            # PRO FIX: Use ITaskbarList3 COM Interface for Pinned Taskbar Overlay Badges
+            # Use ITaskbarList3 COM Interface for Pinned Taskbar Overlay Badges
             if remaining > 0 or s.get("sw_running", False):
                 badge_img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
                 badge_draw = ImageDraw.Draw(badge_img)
@@ -1171,7 +1170,7 @@ class TodoApp(ctk.CTk):
             IMAGE_ICON = 1
             hicon = ctypes.windll.user32.LoadImageW(None, icon_path, IMAGE_ICON, 16, 16, LR_LOADFROMFILE) if icon_path else 0
             
-            # PRO FIX: Force Windows to register the window in the taskbar before setting the overlay!
+            # Force Windows to register the window in the taskbar before setting the overlay!
             # If DWM lags, SetOverlayIcon fails. AddTab guarantees it is registered.
             taskbar.AddTab(hwnd)
             taskbar.SetOverlayIcon(hwnd, hicon, description)

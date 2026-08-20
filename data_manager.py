@@ -4,7 +4,7 @@ import datetime
 import sys
 import time
 
-# PRO FIX: Ensure data.json saves exactly where the .exe is located!
+# Ensure data.json saves exactly where the .exe is located!
 if getattr(sys, 'frozen', False):
     application_path = os.path.dirname(sys.executable)
 else:
@@ -239,7 +239,7 @@ class DataManager:
             
             self.data["settings"]["last_reset_ts"] = now.timestamp()
             
-        # PRO FIX: Auto-Demotion for Q1 tasks older than 48 hours
+        # Auto-Demotion for Q1 tasks older than 48 hours
         now_ts = time.time()
         for t in self.data["tasks"]:
             if t.get("quadrant") == "q1" and not t.get("completed"):
